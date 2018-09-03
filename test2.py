@@ -8,55 +8,41 @@ def test(nets, print_=False):
         # 1 and 1 = 1
         net.add_input([1])
         net.add_input([1])
-        value_true = net.output()[0]
-        score -= (1 - value_true)
+        value_true1 = net.output()[0]
+        score -= 1 - value_true1
         net.clear_inputs()
-
-        # 1 and 0 = 0
 
         net.add_input([1])
         net.add_input([0])
-
-        value_false1 = net.output()[0]
-
-        score -= 0 - value_false1
-        score += abs(value_false1 - value_true)
+        value_true2 = net.output()[0]
+        score -= 1 - value_true2
         net.clear_inputs()
-
-        # 0 and 1 = 0
 
         net.add_input([0])
         net.add_input([1])
-
-        value_false2 = net.output()[0]
-
-        score -= 0 - value_false2
-        score += abs(value_false2 - value_true)
+        value_true3 = net.output()[0]
+        score -= 1 - value_true3
         net.clear_inputs()
-        
-        # 0 and 0 = 0
 
         net.add_input([0])
         net.add_input([0])
-        
-        value_false3 = net.output()[0]
+        value_false = net.output()[0]
+        score -= (0 + value_true1)
+        net.clear_inputs()
 
-        score -= 0 - value_false3
-        score += abs(value_false3 - value_true)
+        score -= abs(value_true1 - value_true2 - value_true3)
 
-        score -= abs(value_false1 - value_false2 - value_false3)
-
-        score -= abs(value_false1 - value_false2)
-        score -= abs(value_false2 - value_false3)
-        score -= abs(value_false1 - value_false3)
+        score += value_true1 - value_false
+        score += value_true2 - value_false
+        score += value_true3 - value_false
 
         net.score = score
 
         if print_:
-            print "1 and 1", value_true
-            print "1 and 0", value_false1
-            print "0 and 1", value_false2
-            print "0 and 0", value_false3
+            print "1 and 1", value_true1
+            print "1 and 0", value_true2
+            print "0 and 1", value_true3
+            print "0 and 0", value_false
 
 def same(x):
     return x
@@ -76,11 +62,19 @@ if __name__ == "__main__":
         for i in range(16):
             w.append([random.uniform(-1, 1), random.uniform(-1, 1)])
             w2.append(random.uniform(-1, 1))
-        nn.add_hidden_layer(w, output_function=same)
+        nn.add_hidden_layer(w)
+
+        for i in range(8):
+            w.append([random.uniform(-1, 1), random.uniform(-1, 1)])
+            w2.append(random.uniform(-1, 1))
+        nn.add_hidden_layer(w)
+
         nn.add_output_neuron(w2, output_function=same)
         nns.append(nn)
 
-    for i in range(100):
+        
+
+    for i in range(150):
         test(nns)
         nns.sort(key=lambda x: x.score)
         # x =  [x.input_neurons for x in nns]
